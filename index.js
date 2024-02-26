@@ -25,7 +25,10 @@ app.get('/set_ppump_rate/:id', (req, res) => {
     res.send("GotIT");
     nuclear_plant.set_Ppump_rate(req.params.id);
 });
-
+app.get('/set_spump_rate/:id', (req, res) => {
+    res.send("GotIT");
+    nuclear_plant.set_Spump_rate(req.params.id);
+});
 app.get('/getdatajson', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
 
@@ -39,7 +42,7 @@ app.get('/getdatajson', (req, res) => {
         'Sec_Cool_pump_rate':nuclear_plant.Sec_Cool_pump_rate,
         'Sec_Cool_reserv_pump':nuclear_plant.Sec_Cool_reserv_pump,
         'Sec_Cool_pressure_release':nuclear_plant.Sec_Cool_pressure_release,
-
+        'Steam_Condencer_water_temp':nuclear_plant.Steam_Condencer_water_temp
     }));
 
 });

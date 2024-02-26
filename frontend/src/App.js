@@ -8,6 +8,7 @@ import {useEffect, useState} from "react";
 const JSONurl="http://localhost:3001/getdatajson";
 const SET_RODS_url="http://localhost:3001/set_rods_pos";
 const SET_Ppumprate_url="http://localhost:3001/set_ppump_rate";
+const SET_Spumprate_url="http://localhost:3001/set_spump_rate";
 
 const marks = [
     {        value: 0,        label: '0°C',
@@ -25,7 +26,7 @@ function valuetext(value: number) {
 
 function App() {
     const hexagons = GridGenerator.hexagon(3);
-    const [data,setData] = useState({"core_temp":247.5,"core_rods_pos":5,"Prim_Cool_pump_rate":0,"Heat_EXCH_water_temp":25});
+    const [data,setData] = useState({"core_temp":247.5,"core_rods_pos":5,"Prim_Cool_pump_rate":0,"Heat_EXCH_water_temp":25,"Sec_Cool_pump_rate":0,"Steam_Condencer_water_temp":25});
     useEffect(() => {
          setInterval(() => {
         axios
@@ -34,6 +35,7 @@ function App() {
             .then((json) => {
                 console.log('json', json);
                 setData(json);
+
                 console.log(json)
             })
             .catch((error) => {
@@ -56,6 +58,14 @@ function App() {
                 console.log(error);
             });
     };
+    const setSpumprate = (event, newValue) => {
+        axios
+            .get(SET_Spumprate_url+'/'+newValue)
+            .then((response) => response.data)
+            .catch((error) => {
+                console.log(error);
+            });
+    };
   return (
     <div className="App">
         <Table class={'table-param'}>
@@ -65,13 +75,20 @@ function App() {
             </tr>
             <tr>
                 <td>core_rods_pos</td>
-                <td><Slider defaultValue={0} aria-label="Default" valueLabelDisplay="auto" onChange={setRods}/></td>
+                <td><Slider value={data.core_rods_pos} aria-label="Default" valueLabelDisplay="auto" onChange={setRods}/></td>
             </tr>
             <tr>
                 <td>Prim_Cool_pump_rate</td>
-                <td><Slider defaultValue={0} aria-label="Default" valueLabelDisplay="auto" onChange={setPpumprate}/></td>
-            </tr>
+                <td><Slider value={data.Prim_Cool_pump_rate} aria-label="Default" valueLabelDisplay="auto"
+                            onChange={setPpumprate}/></td>
 
+
+            </tr>
+            <tr>
+                <td>Sec_Cool_pump_rate</td>
+                <td><Slider defaultValue={data.Sec_Cool_pump_rate} aria-label="Default" valueLabelDisplay="auto"
+                            onChange={setSpumprate}/></td>
+            </tr>
         </Table>
         <Table>
             <tr>
@@ -101,8 +118,12 @@ function App() {
                             <td>{data.Heat_EXCH_water_temp}</td>
                         </tr>
                         <tr>
-                            <td>param</td>
-                            <td>value</td>
+                            <td>Prim_Cool_pump_rate</td>
+                            <td>{data.Sec_Cool_pump_rate}</td>
+                        </tr>
+                        <tr>
+                            <td>Steam_Condencer_water_temp</td>
+                            <td>{data.Steam_Condencer_water_temp}</td>
                         </tr>
                     </Table>
                 </td>

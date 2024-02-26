@@ -81,20 +81,27 @@ export default class nuclear_plant{
 
         //**************************************** SECONDARY COOLANT
         this.Sec_Cool_water_temp=25;
+        this.Sec_Cool_heat_conductance=4.5;
         this.Sec_Cool_pump_rate=0; //0-100%
         this.Sec_Cool_reserv_pump=false;
         this.Sec_Cool_water_level=100 //%
         this.Sec_Cool_pressure_release=false; //pressure valve
         this.Sec_Cool_turbine=0 //% calculated by steam flow
 
+
+        this.Steam_Condencer_conduction=10;//some heat conduction ratio
+        this.Steam_Condencer_water_temp=25;
+
         //heat_capacity: P_pump_rate/Pwater_temp  + xxx*(this.reserv_pump:)
 
         this.coreHeatInterval=0;
         this.PrimaryCoolantInterval=0;
+        this.SecondaryCoolantInterval=0;
     }
     start_reactor(){
         this.coreHeatInterval = setInterval(this.core_heating.bind(this), 1000);
         this.PrimaryCoolantInterval = setInterval(this.primary_coolant.bind(this), 1000);
+        this.SecondaryCoolantInterval = setInterval(this.secondary_coolant.bind(this), 1000);
     }
     core_heating(){
         console.log("core temp ",this.core_temp, this.core_energy*this.core_rods_pos,"rods ",this.core_rods_pos);
@@ -106,11 +113,24 @@ export default class nuclear_plant{
         //rate 50% -10
         //rate 100% -20
         //this.Prim_Cool_heat_conductance=this.Prim_Cool_water_temp
-        console.log("core temp ",this.core_temp,Math.log(this.Prim_Cool_pump_rate+1)*this.Prim_Cool_heat_conductance,"Prim_Cool_pump_rate ",this.Prim_Cool_pump_rate);
-        this.core_temp-=Math.log(this.Prim_Cool_pump_rate+1)*this.Prim_Cool_heat_conductance;
+        if( this.core_temp>90){
+            console.log("core temp ",this.core_temp,Math.log(this.Prim_Cool_pump_rate+1)*this.Prim_Cool_heat_conductance,"Prim_Cool_pump_rate ",this.Prim_Cool_pump_rate);
+            this.core_temp-=Math.log(this.Prim_Cool_pump_rate+1)*this.Prim_Cool_heat_conductance;
 
-        this.Heat_EXCH_water_temp+=Math.log(this.Prim_Cool_pump_rate+1)*this.Prim_Cool_heat_conductance;
-        console.log("Heat Exchanger ",this.Heat_EXCH_water_temp)
+            this.Heat_EXCH_water_temp+=Math.log(this.Prim_Cool_pump_rate+1)*this.Prim_Cool_heat_conductance;
+            console.log("Heat Exchanger ",this.Heat_EXCH_water_temp)
+        }
+    }
+
+    secondary_coolant(){
+        //rate 50% -10
+        //rate 100% -20
+        //this.Prim_Cool_heat_conductance=this.Prim_Cool_water_temp
+        if( this.core_temp>90) {
+            this.Heat_EXCH_water_temp -= Math.log(this.Sec_Cool_pump_rate + 1) * this.Sec_Cool_heat_conductance;
+
+            this.Steam_Condencer_water_temp += Math.log(this.Sec_Cool_pump_rate + 1) * this.Steam_Condencer_conduction;
+        }
     }
 
 
@@ -122,5 +142,7 @@ export default class nuclear_plant{
     set_Ppump_rate(rate){
         this.Prim_Cool_pump_rate=rate;
     }
-
+    set_Spump_rate(rate){
+        this.Sec_Cool_pump_rate=rate;
+    }
 }
