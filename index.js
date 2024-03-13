@@ -42,7 +42,9 @@ app.get('/getdatajson', (req, res) => {
         'Sec_Cool_pump_rate':nuclear_plant.Sec_Cool_pump_rate,
         'Sec_Cool_reserv_pump':nuclear_plant.Sec_Cool_reserv_pump,
         'Sec_Cool_pressure_release':nuclear_plant.Sec_Cool_pressure_release,
-        'Steam_Condencer_water_temp':nuclear_plant.Steam_Condencer_water_temp
+        'Steam_Condencer_water_temp':nuclear_plant.Steam_Condencer_water_temp,
+        'ACP_Cool_pump_rate': nuclear_plant.ACP_Cool_pump_rate,
+        'Cooling_Tower_water_temp':nuclear_plant.Cooling_Tower_water_temp
     }));
 
 });

@@ -26,7 +26,7 @@ function valuetext(value: number) {
 
 function App() {
     const hexagons = GridGenerator.hexagon(3);
-    const [data,setData] = useState({"core_temp":247.5,"core_rods_pos":5,"Prim_Cool_pump_rate":0,"Heat_EXCH_water_temp":25,"Sec_Cool_pump_rate":0,"Steam_Condencer_water_temp":25});
+    const [data,setData] = useState({"core_temp":247.5,"core_rods_pos":5,"Prim_Cool_pump_rate":0,"Heat_EXCH_water_temp":25,"Sec_Cool_pump_rate":0,"Steam_Condencer_water_temp":25, "ACP_Cool_pump_rate":0,"Cooling_Tower_water_temp":0});
     useEffect(() => {
          setInterval(() => {
         axios
@@ -124,6 +124,14 @@ function App() {
                         <tr>
                             <td>Steam_Condencer_water_temp</td>
                             <td>{data.Steam_Condencer_water_temp}</td>
+                        </tr>
+                        <tr>
+                            <td>ACP_Cool_pump_rate</td>
+                            <td>{data.ACP_Cool_pump_rate}</td>
+                        </tr>
+                        <tr>
+                            <td>Cooling_Tower_water_temp</td>
+                            <td>{data.Cooling_Tower_water_temp}</td>
                         </tr>
                     </Table>
                 </td>
