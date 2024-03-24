@@ -149,6 +149,7 @@ export default class nuclear_plant{
         }
     }
 
+
     acp_coolant(){
         //rate 50% -10
         //rate 100% -20
