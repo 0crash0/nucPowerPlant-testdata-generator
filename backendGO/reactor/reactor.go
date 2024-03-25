@@ -1,12 +1,18 @@
 package reactor
 
+import (
+	"log"
+	"math"
+	"time"
+)
+
 type ReactorCore struct {
-	CoreEnergy  float32
-	CoreTemp    float32
+	CoreEnergy  float64
+	CoreTemp    float64
 	CoreRodsPos int
 }
 type PrimaryCoolant struct {
-	PrimCoolHeatConductance float32
+	PrimCoolHeatConductance float64
 	//Prim_Cool_water_temp=25;
 	PrimCoolPumpRate        int //0-100%
 	PrimCoolRservPump       bool
@@ -15,12 +21,12 @@ type PrimaryCoolant struct {
 }
 type HeatExchanger struct {
 	//HeatExchConduction int
-	HeatExchWaterTemp int
+	HeatExchWaterTemp float64
 }
 
 type SecondaryCoolant struct {
 	SecCoolWaterTemp       int
-	SecCoolHeatConductance float32
+	SecCoolHeatConductance float64
 	SecCoolPumpRate        int //0-100%
 	SecCoolReservPump      bool
 	SecCoolWaterLevel      int  //%
@@ -35,7 +41,7 @@ type SteamCondencer struct {
 
 type ACPCoolant struct {
 	AcpCoolWaterTemp       int
-	AcpCoolHeatConductance float32
+	AcpCoolHeatConductance float64
 	AcpCoolPumpRate        int //0-100%
 	AcpCoolReservPump      bool
 	AcpCoolWaterLevel      int  //%
@@ -57,6 +63,14 @@ type PowerPlant struct {
 	SteamCondencer   SteamCondencer
 	ACPCoolant       ACPCoolant
 	CoolingTower     CoolingTower
+}
+
+type PowerPlantCtrl struct {
+	PowerPlant               PowerPlant
+	coreHeatInterval         *time.Ticker
+	PrimaryCoolantInterval   *time.Ticker
+	SecondaryCoolantInterval *time.Ticker
+	ACPCoolantInterval       *time.Ticker
 }
 
 func NewReactorCore() ReactorCore {
@@ -117,7 +131,6 @@ func NewCoolingTower() CoolingTower {
 	ClngTwr.CoolingTowerWaterTemp = 25
 	return ClngTwr
 }
-
 func NewPowerPlant() PowerPlant {
 	PwrPlnt := PowerPlant{}
 	PwrPlnt.ReactorCore = NewReactorCore()
@@ -128,4 +141,61 @@ func NewPowerPlant() PowerPlant {
 	PwrPlnt.ACPCoolant = NewACPCoolant()
 	PwrPlnt.CoolingTower = NewCoolingTower()
 	return PwrPlnt
+}
+func NewPowerPlantCtrl() PowerPlantCtrl {
+	PwrPlntCtrl := PowerPlantCtrl{}
+	PwrPlntCtrl.PowerPlant = NewPowerPlant()
+
+	return PwrPlntCtrl
+}
+
+func CoreHeating(plant *PowerPlantCtrl) {
+	//console.log("core temp ",this.core_temp, this.core_energy*this.core_rods_pos,"rods ",this.core_rods_pos);
+
+	plant.coreHeatInterval = time.NewTicker(time.Second)
+	go func() {
+		for ; ; <-plant.coreHeatInterval.C {
+			log.Println("Hey!")
+			plant.PowerPlant.ReactorCore.CoreTemp += plant.PowerPlant.ReactorCore.CoreEnergy * float64(plant.PowerPlant.ReactorCore.CoreRodsPos)
+			log.Println(plant.PowerPlant.ReactorCore.CoreTemp)
+		}
+	}()
+}
+
+func PrimaryCooling(plant *PowerPlantCtrl) {
+	//console.log("core temp ",this.core_temp, this.core_energy*this.core_rods_pos,"rods ",this.core_rods_pos);
+
+	plant.PrimaryCoolantInterval = time.NewTicker(time.Second)
+	go func() {
+		for ; ; <-plant.PrimaryCoolantInterval.C {
+			log.Println("Hey!")
+			plant.PowerPlant.ReactorCore.CoreTemp += plant.PowerPlant.ReactorCore.CoreEnergy * float64(plant.PowerPlant.ReactorCore.CoreRodsPos)
+			log.Println(plant.PowerPlant.HeatExchanger.HeatExchWaterTemp)
+
+			if plant.PowerPlant.ReactorCore.CoreTemp > 90 {
+
+				plant.PowerPlant.ReactorCore.CoreTemp -= math.Log(float64(plant.PowerPlant.PrimaryCoolant.PrimCoolPumpRate+1)) * plant.PowerPlant.PrimaryCoolant.PrimCoolHeatConductance
+
+				plant.PowerPlant.HeatExchanger.HeatExchWaterTemp += math.Log(float64(plant.PowerPlant.PrimaryCoolant.PrimCoolPumpRate+1)) * plant.PowerPlant.PrimaryCoolant.PrimCoolHeatConductance
+
+			}
+
+		}
+	}()
+}
+
+func StartReactor(plant *PowerPlantCtrl) {
+	CoreHeating(plant)
+	PrimaryCooling(plant)
+	/*this.PrimaryCoolantInterval = setInterval(this.primary_coolant.bind(this), 1000)
+	this.SecondaryCoolantInterval = setInterval(this.secondary_coolant.bind(this), 1000)
+	this.ACPCoolantInterval = setInterval(this.acp_coolant.bind(this), 1000)*/
+}
+func StopReactor(plant *PowerPlantCtrl) {
+	plant.coreHeatInterval.Stop()
+	plant.PrimaryCoolantInterval.Stop()
+	/*this.PrimaryCoolantInterval = setInterval(this.primary_coolant.bind(this), 1000)
+	this.SecondaryCoolantInterval = setInterval(this.secondary_coolant.bind(this), 1000)
+	this.ACPCoolantInterval = setInterval(this.acp_coolant.bind(this), 1000)*/
+
 }

@@ -6,16 +6,15 @@ import (
 	"log/slog"
 	"main/reactor"
 	"net/http"
-	"reflect"
-	"time"
 )
 
 func main() {
-	core := reactor.NewPowerPlant()
+	core := reactor.NewPowerPlantCtrl()
 
 	/// to json
 
-	jsonToSend, err := json.Marshal(core)
+	jsonToSend, err := json.Marshal(core.PowerPlant)
+	///jsonToSend1, err := json.Marshal(core)
 	if err != nil {
 		fmt.Printf("Error: %s", err)
 		return
@@ -24,10 +23,30 @@ func main() {
 	http.HandleFunc("/json", func(w http.ResponseWriter, r *http.Request) {
 		slog.Info("Received request to /json endpoint")
 
-		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		jsonToSend, err = json.Marshal(core.PowerPlant)
 		//fmt.Fprintln(w, "Hello 123!")
+
+		if err != nil {
+			fmt.Printf("Error: %s", err)
+			return
+		}
 		fmt.Fprintln(w, string(jsonToSend))
+	})
+	http.HandleFunc("/start", func(w http.ResponseWriter, r *http.Request) {
+		slog.Info("Received request to /start endpoint")
+
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintln(w, "Started!")
+		reactor.StartReactor(&core)
+	})
+	http.HandleFunc("/stop", func(w http.ResponseWriter, r *http.Request) {
+		slog.Info("Received request to /start endpoint")
+
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintln(w, "Stoped!")
+		reactor.StopReactor(&core)
 	})
 
 	slog.Info("Starting server on port 8890")
@@ -35,27 +54,6 @@ func main() {
 	err = http.ListenAndServe(":8890", nil)
 	if err != nil {
 		slog.Error("Application finished with an error", "error", err)
+
 	}
-}
-
-func setInterval(p interface{}, interval time.Duration) chan<- bool {
-	ticker := time.NewTicker(interval)
-	stopIt := make(chan bool)
-	go func() {
-
-		for {
-
-			select {
-			case <-stopIt:
-				fmt.Println("stop setInterval")
-				return
-			case <-ticker.C:
-				reflect.ValueOf(p).Call([]reflect.Value{})
-			}
-		}
-
-	}()
-
-	// return the bool channel to use it as a stopper
-	return stopIt
 }
