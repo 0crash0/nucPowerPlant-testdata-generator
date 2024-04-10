@@ -5,10 +5,12 @@ import { HexGrid, Layout, Hexagon, GridGenerator } from 'react-hexgrid';
 import axios from "axios";
 import {useEffect, useState} from "react";
 
-const JSONurl="http://localhost:3001/getdatajson";
-const SET_RODS_url="http://localhost:3001/set_rods_pos";
-const SET_Ppumprate_url="http://localhost:3001/set_ppump_rate";
-const SET_Spumprate_url="http://localhost:3001/set_spump_rate";
+const SRV = "localhost:8890" //3001 nodejs  8890 Go
+
+const JSONurl="http://"+SRV+"/getdatajson";
+const SET_RODS_url="http://"+SRV+"/set_rods_pos";
+const SET_Ppumprate_url="http://"+SRV+"/set_ppump_rate";
+const SET_Spumprate_url="http://"+SRV+"/set_spump_rate";
 
 const marks = [
     {        value: 0,        label: '0°C',
@@ -34,7 +36,18 @@ function App() {
             .then((response) => response.data)
             .then((json) => {
                 console.log('json', json);
-                setData(json);
+
+                //setData(json);     //NODE JS
+                setData(
+                    {"core_temp":json.ReactorCore.CoreTemp,
+                        "core_rods_pos":json.ReactorCore.CoreRodsPos,
+                        "Prim_Cool_pump_rate":json.PrimaryCoolant.PrimCoolPumpRate,
+                        "Heat_EXCH_water_temp":json.HeatExchanger.HeatExchWaterTemp,
+                        "Sec_Cool_pump_rate":json.SecondaryCoolant.SecCoolPumpRate,
+                        "Steam_Condencer_water_temp":json.SecondaryCoolant.SecCoolWaterTemp,
+                        "ACP_Cool_pump_rate":json.ACPCoolant.AcpCoolPumpRate,
+                        "Cooling_Tower_water_temp":json.ACPCoolant.AcpCoolWaterTemp}
+                ) // GO
 
                 console.log(json)
             })
@@ -118,7 +131,7 @@ function App() {
                             <td>{data.Heat_EXCH_water_temp}</td>
                         </tr>
                         <tr>
-                            <td>Prim_Cool_pump_rate</td>
+                            <td>Sec_Cool_pump_rate</td>
                             <td>{data.Sec_Cool_pump_rate}</td>
                         </tr>
                         <tr>
