@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"github.com/rs/cors"
 	"log/slog"
-	"main/reactor"
+	"main/powerplant"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
 func main() {
-	core := reactor.NewPowerPlantCtrl()
+	core := powerplant.NewPowerPlantCtrl()
 	mux := http.NewServeMux()
 	/// to json
 
@@ -42,14 +42,15 @@ func main() {
 
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintln(w, "Started!")
-		reactor.StartReactor(&core)
+
+		powerplant.StartReactor(&core)
 	})
 	mux.HandleFunc("/stop", func(w http.ResponseWriter, r *http.Request) {
 		slog.Info("Received request to /start endpoint")
 
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintln(w, "Stoped!")
-		reactor.StopReactor(&core)
+		powerplant.StopReactor(&core)
 	})
 	mux.HandleFunc("/set_rods_pos/", func(w http.ResponseWriter, r *http.Request) {
 		id := strings.TrimPrefix(r.URL.Path, "/set_rods_pos/")
@@ -68,6 +69,13 @@ func main() {
 		core.PowerPlant.SecondaryCoolant.SecCoolPumpRate, _ = strconv.Atoi(id)
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintln(w, "Spump set!")
+	})
+
+	mux.HandleFunc("/set_acppump_rate/", func(w http.ResponseWriter, r *http.Request) {
+		id := strings.TrimPrefix(r.URL.Path, "/set_acppump_rate/")
+		core.PowerPlant.ACPCoolant.AcpCoolPumpRate, _ = strconv.Atoi(id)
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintln(w, "ACPpump set!")
 	})
 
 	slog.Info("Starting server on port 8890")

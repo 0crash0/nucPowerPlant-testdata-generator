@@ -1,4 +1,4 @@
-package reactor
+package powerplant
 
 import (
 	"math"
@@ -234,6 +234,24 @@ func StopReactor(plant *PowerPlantCtrl) {
 	plant.PrimaryCoolantInterval.Stop()
 	plant.SecondaryCoolantInterval.Stop()
 	plant.ACPCoolantInterval.Stop()
+	plant.PowerPlant.ReactorCore.CoreTemp = 98
+	plant.PowerPlant.ReactorCore.CoreRodsPos = 5
+	plant.PowerPlant.PrimaryCoolant.PrimCoolPumpRate = 0
+	plant.PowerPlant.PrimaryCoolant.PrimCoolRservPump = false
+	plant.PowerPlant.PrimaryCoolant.PrimCoolPressureRelease = false
+	plant.PowerPlant.HeatExchanger.HeatExchWaterTemp = 25
+	plant.PowerPlant.SecondaryCoolant.SecCoolPumpRate = 0
+	plant.PowerPlant.SecondaryCoolant.SecCoolReservPump = false
+	plant.PowerPlant.SecondaryCoolant.SecCoolPressureRelease = false
+	plant.PowerPlant.SecondaryCoolant.SecCoolWaterTemp = 25
+	plant.PowerPlant.SecondaryCoolant.SecCoolWaterLevel = 100
+	plant.PowerPlant.SteamCondencer.SteamCondencerWaterTemp = 25
+	plant.PowerPlant.ACPCoolant.AcpCoolPumpRate = 0
+	plant.PowerPlant.ACPCoolant.AcpCoolWaterTemp = 25
+	plant.PowerPlant.ACPCoolant.AcpCoolReservPump = false
+	plant.PowerPlant.ACPCoolant.AcpCoolPressureRelease = false
+	plant.PowerPlant.ACPCoolant.AcpCoolWaterLevel = 100
+	plant.PowerPlant.CoolingTower.CoolingTowerWaterTemp = 25
 	/*this.PrimaryCoolantInterval = setInterval(this.primary_coolant.bind(this), 1000)
 	this.SecondaryCoolantInterval = setInterval(this.secondary_coolant.bind(this), 1000)
 	this.ACPCoolantInterval = setInterval(this.acp_coolant.bind(this), 1000)*/

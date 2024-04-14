@@ -11,7 +11,9 @@ const JSONurl="http://"+SRV+"/getdatajson";
 const SET_RODS_url="http://"+SRV+"/set_rods_pos";
 const SET_Ppumprate_url="http://"+SRV+"/set_ppump_rate";
 const SET_Spumprate_url="http://"+SRV+"/set_spump_rate";
-
+const SET_Start_url="http://"+SRV+"/start";
+const SET_Stop_url="http://"+SRV+"/stop";
+const SET_ACPpumprate_url = "http://"+SRV+"/set_acppump_rate";
 const marks = [
     {        value: 0,        label: '0°C',
     },
@@ -28,7 +30,17 @@ function valuetext(value: number) {
 
 function App() {
     const hexagons = GridGenerator.hexagon(3);
-    const [data,setData] = useState({"core_temp":247.5,"core_rods_pos":5,"Prim_Cool_pump_rate":0,"Heat_EXCH_water_temp":25,"Sec_Cool_pump_rate":0,"Steam_Condencer_water_temp":25, "ACP_Cool_pump_rate":0,"Cooling_Tower_water_temp":0});
+    const [data,setData] = useState({
+        "core_temp":247.5,
+        "core_rods_pos":5,
+        "Prim_Cool_pump_rate":0,
+        "Heat_EXCH_water_temp":25,
+        "Sec_Cool_pump_rate":0,
+        "Sec_Cool_water_temp":25,
+        "Steam_Condencer_water_temp":25,
+        "ACP_Cool_pump_rate":0,
+        "Cooling_Tower_water_temp":0
+    });
     useEffect(() => {
          setInterval(() => {
         axios
@@ -44,7 +56,8 @@ function App() {
                         "Prim_Cool_pump_rate":json.PrimaryCoolant.PrimCoolPumpRate,
                         "Heat_EXCH_water_temp":json.HeatExchanger.HeatExchWaterTemp,
                         "Sec_Cool_pump_rate":json.SecondaryCoolant.SecCoolPumpRate,
-                        "Steam_Condencer_water_temp":json.SecondaryCoolant.SecCoolWaterTemp,
+                        "Sec_Cool_water_temp":json.SecondaryCoolant.SecCoolWaterTemp,
+                        "Steam_Condencer_water_temp":json.SteamCondencer.SteamCondencerWaterTemp,
                         "ACP_Cool_pump_rate":json.ACPCoolant.AcpCoolPumpRate,
                         "Cooling_Tower_water_temp":json.ACPCoolant.AcpCoolWaterTemp}
                 ) // GO
@@ -79,6 +92,32 @@ function App() {
                 console.log(error);
             });
     };
+    const setACPpumprate = (event, newValue) => {
+        axios
+            .get(SET_ACPpumprate_url+'/'+newValue)
+            .then((response) => response.data)
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const setStart = (event) => {
+        axios
+            .get(SET_Start_url)
+            .then((response) => response.data)
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+    const setStop = (event) => {
+        axios
+            .get(SET_Stop_url)
+            .then((response) => response.data)
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
   return (
     <div className="App">
         <Table class={'table-param'}>
@@ -88,7 +127,8 @@ function App() {
             </tr>
             <tr>
                 <td>core_rods_pos</td>
-                <td><Slider value={data.core_rods_pos} aria-label="Default" valueLabelDisplay="auto" onChange={setRods}/></td>
+                <td><Slider value={data.core_rods_pos} aria-label="Default" valueLabelDisplay="auto"
+                            onChange={setRods}/></td>
             </tr>
             <tr>
                 <td>Prim_Cool_pump_rate</td>
@@ -101,6 +141,24 @@ function App() {
                 <td>Sec_Cool_pump_rate</td>
                 <td><Slider defaultValue={data.Sec_Cool_pump_rate} aria-label="Default" valueLabelDisplay="auto"
                             onChange={setSpumprate}/></td>
+            </tr>
+            <tr>
+                <td>Sec_ACP_pump_rate</td>
+                <td><Slider defaultValue={data.ACP_Cool_pump_rate} aria-label="Default" valueLabelDisplay="auto"
+                            onChange={setACPpumprate}/></td>
+            </tr>
+        </Table>
+        <Table class={'table-param'}>
+            <tr>
+                <td>
+                    <button onClick={setStart}>Start</button>
+                </td>
+                <td>
+                    <button>Pause</button>
+                </td>
+                <td>
+                    <button onClick={setStop}>Stop</button>
+                </td>
             </tr>
         </Table>
         <Table>
@@ -133,6 +191,10 @@ function App() {
                         <tr>
                             <td>Sec_Cool_pump_rate</td>
                             <td>{data.Sec_Cool_pump_rate}</td>
+                        </tr>
+                        <tr>
+                            <td>Sec_Cool_water_temp</td>
+                            <td>{data.Sec_Cool_water_temp}</td>
                         </tr>
                         <tr>
                             <td>Steam_Condencer_water_temp</td>
