@@ -4,6 +4,8 @@ import Table from '@mui/material/Table';
 import { HexGrid, Layout, Hexagon, GridGenerator } from 'react-hexgrid';
 import axios from "axios";
 import {useEffect, useState} from "react";
+import { ReactComponent as WaterPumpSvg} from './Water_pump.svg'
+//import  WaterPumpSvg from './WaterPump'
 
 const SRV = "localhost:8890" //3001 nodejs  8890 Go
 
@@ -13,16 +15,12 @@ const SET_Ppumprate_url="http://"+SRV+"/set_ppump_rate";
 const SET_Spumprate_url="http://"+SRV+"/set_spump_rate";
 const SET_Start_url="http://"+SRV+"/start";
 const SET_Stop_url="http://"+SRV+"/stop";
-const SET_ACPpumprate_url = "http://"+SRV+"/set_acppump_rate";
+const SET_ACPpumprate_url = "http://"+SRV+"/set_acp pump_rate";
 const marks = [
-    {        value: 0,        label: '0°C',
-    },
-    {        value: 20,         label: '20°C',
-    },
-    {        value: 37,        label: '37°C',
-    },
-    {        value: 100,        label: '100°C',
-    },
+    {        value: 0,        label: '0°C',    },
+    {        value: 20,         label: '20°C',    },
+    {        value: 37,        label: '37°C',    },
+    {        value: 100,        label: '100°C',    },
 ];
 function valuetext(value: number) {
     return `${value}°C`;
@@ -119,110 +117,111 @@ function App() {
     };
 
   return (
-    <div className="App">
-        <Table class={'table-param'}>
-            <tr>
-                <td>param</td>
-                <td>slider</td>
-            </tr>
-            <tr>
-                <td>core_rods_pos</td>
-                <td><Slider value={data.core_rods_pos} aria-label="Default" valueLabelDisplay="auto"
-                            onChange={setRods}/></td>
-            </tr>
-            <tr>
-                <td>Prim_Cool_pump_rate</td>
-                <td><Slider value={data.Prim_Cool_pump_rate} aria-label="Default" valueLabelDisplay="auto"
-                            onChange={setPpumprate}/></td>
+      <div className="App">
+          <WaterPumpSvg width={70} length={100}/>
+          <Table class={'table-param'}>
+              <tr>
+                  <td>param</td>
+                  <td>slider</td>
+              </tr>
+              <tr>
+                  <td>core_rods_pos</td>
+                  <td><Slider value={data.core_rods_pos} aria-label="Default" valueLabelDisplay="auto"
+                              onChange={setRods}/></td>
+              </tr>
+              <tr>
+                  <td>Prim_Cool_pump_rate</td>
+                  <td><Slider value={data.Prim_Cool_pump_rate} aria-label="Default" valueLabelDisplay="auto"
+                              onChange={setPpumprate}/></td>
 
 
-            </tr>
-            <tr>
-                <td>Sec_Cool_pump_rate</td>
-                <td><Slider defaultValue={data.Sec_Cool_pump_rate} aria-label="Default" valueLabelDisplay="auto"
-                            onChange={setSpumprate}/></td>
-            </tr>
-            <tr>
-                <td>Sec_ACP_pump_rate</td>
-                <td><Slider defaultValue={data.ACP_Cool_pump_rate} aria-label="Default" valueLabelDisplay="auto"
-                            onChange={setACPpumprate}/></td>
-            </tr>
-        </Table>
-        <Table class={'table-param'}>
-            <tr>
-                <td>
-                    <button onClick={setStart}>Start</button>
-                </td>
-                <td>
-                    <button>Pause</button>
-                </td>
-                <td>
-                    <button onClick={setStop}>Stop</button>
-                </td>
-            </tr>
-        </Table>
-        <Table>
-            <tr>
-                <td>
-                    <HexGrid width={500} height={500} fill={'red'} stroke={'black'} strokeWidth={'0.25'}>
-                        <Layout size={{ x: 7, y: 7 }}>
-                            { hexagons.map((hex, i) => <Hexagon key={i} q={hex.q} r={hex.r} s={hex.s} />) }
-                        </Layout>
-                    </HexGrid>
-                </td>
-                <td>
-                    <Table class={'table-param'}>
-                        <tr>
-                            <td>core_temp</td>
-                            <td>{data.core_temp}</td>
-                        </tr>
-                        <tr>
-                            <td>core_rods_pos</td>
-                            <td>{data.core_rods_pos}</td>
-                        </tr>
-                        <tr>
-                            <td>Prim_Cool_pump_rate</td>
-                            <td>{data.Prim_Cool_pump_rate}</td>
-                        </tr>
-                        <tr>
-                            <td>Heat_EXCH_water_temp</td>
-                            <td>{data.Heat_EXCH_water_temp}</td>
-                        </tr>
-                        <tr>
-                            <td>Sec_Cool_pump_rate</td>
-                            <td>{data.Sec_Cool_pump_rate}</td>
-                        </tr>
-                        <tr>
-                            <td>Sec_Cool_water_temp</td>
-                            <td>{data.Sec_Cool_water_temp}</td>
-                        </tr>
-                        <tr>
-                            <td>Steam_Condencer_water_temp</td>
-                            <td>{data.Steam_Condencer_water_temp}</td>
-                        </tr>
-                        <tr>
-                            <td>ACP_Cool_pump_rate</td>
-                            <td>{data.ACP_Cool_pump_rate}</td>
-                        </tr>
-                        <tr>
-                            <td>Cooling_Tower_water_temp</td>
-                            <td>{data.Cooling_Tower_water_temp}</td>
-                        </tr>
-                    </Table>
-                </td>
-            </tr>
-        </Table>
+              </tr>
+              <tr>
+                  <td>Sec_Cool_pump_rate</td>
+                  <td><Slider defaultValue={data.Sec_Cool_pump_rate} aria-label="Default" valueLabelDisplay="auto"
+                              onChange={setSpumprate}/></td>
+              </tr>
+              <tr>
+                  <td>Sec_ACP_pump_rate</td>
+                  <td><Slider defaultValue={data.ACP_Cool_pump_rate} aria-label="Default" valueLabelDisplay="auto"
+                              onChange={setACPpumprate}/></td>
+              </tr>
+          </Table>
+          <Table class={'table-param'}>
+              <tr>
+                  <td>
+                      <button onClick={setStart}>Start</button>
+                  </td>
+                  <td>
+                      <button>Pause</button>
+                  </td>
+                  <td>
+                      <button onClick={setStop}>Stop</button>
+                  </td>
+              </tr>
+          </Table>
+          <Table>
+              <tr>
+                  <td>
+                      <HexGrid width={500} height={500} fill={'red'} stroke={'black'} strokeWidth={'0.25'}>
+                          <Layout size={{x: 7, y: 7}}>
+                              {hexagons.map((hex, i) => <Hexagon key={i} q={hex.q} r={hex.r} s={hex.s}/>)}
+                          </Layout>
+                      </HexGrid>
+                  </td>
+                  <td>
+                      <Table class={'table-param'}>
+                          <tr>
+                              <td>core_temp</td>
+                              <td>{data.core_temp}</td>
+                          </tr>
+                          <tr>
+                              <td>core_rods_pos</td>
+                              <td>{data.core_rods_pos}</td>
+                          </tr>
+                          <tr>
+                              <td>Prim_Cool_pump_rate</td>
+                              <td>{data.Prim_Cool_pump_rate}</td>
+                          </tr>
+                          <tr>
+                              <td>Heat_EXCH_water_temp</td>
+                              <td>{data.Heat_EXCH_water_temp}</td>
+                          </tr>
+                          <tr>
+                              <td>Sec_Cool_pump_rate</td>
+                              <td>{data.Sec_Cool_pump_rate}</td>
+                          </tr>
+                          <tr>
+                              <td>Sec_Cool_water_temp</td>
+                              <td>{data.Sec_Cool_water_temp}</td>
+                          </tr>
+                          <tr>
+                              <td>Steam_Condencer_water_temp</td>
+                              <td>{data.Steam_Condencer_water_temp}</td>
+                          </tr>
+                          <tr>
+                              <td>ACP_Cool_pump_rate</td>
+                              <td>{data.ACP_Cool_pump_rate}</td>
+                          </tr>
+                          <tr>
+                              <td>Cooling_Tower_water_temp</td>
+                              <td>{data.Cooling_Tower_water_temp}</td>
+                          </tr>
+                      </Table>
+                  </td>
+              </tr>
+          </Table>
 
-        <Slider
-            aria-label="Custom marks"
-            defaultValue={20}
-            getAriaValueText={valuetext}
-            step={10}
-            valueLabelDisplay="auto"
-            marks={marks}
-        />
+          <Slider
+              aria-label="Custom marks"
+              defaultValue={20}
+              getAriaValueText={valuetext}
+              step={10}
+              valueLabelDisplay="auto"
+              marks={marks}
+          />
 
-    </div>
+      </div>
   );
 }
 
