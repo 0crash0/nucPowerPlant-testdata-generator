@@ -4,7 +4,8 @@ import Table from '@mui/material/Table';
 import { HexGrid, Layout, Hexagon, GridGenerator } from 'react-hexgrid';
 import axios from "axios";
 import {useEffect, useState} from "react";
-import { ReactComponent as WaterPumpSvg} from './Water_pump.svg'
+import  WaterPumpSvg from './components/WaterPump'
+import  TurbineSvg from './components/turbine'
 //import  WaterPumpSvg from './WaterPump'
 
 const SRV = "localhost:8890" //3001 nodejs  8890 Go
@@ -39,13 +40,17 @@ function App() {
         "ACP_Cool_pump_rate":0,
         "Cooling_Tower_water_temp":0
     });
+
+    const [ppumpDur, setpPumpDur] = useState("20s");
+    const [spumpDur, setsPumpDur] = useState("20s");
+    const [acppumpDur, setacpPumpDur] = useState("20s");
     useEffect(() => {
          setInterval(() => {
         axios
             .get(JSONurl)
             .then((response) => response.data)
             .then((json) => {
-                console.log('json', json);
+                //console.log('json', json);
 
                 //setData(json);     //NODE JS
                 setData(
@@ -60,7 +65,7 @@ function App() {
                         "Cooling_Tower_water_temp":json.ACPCoolant.AcpCoolWaterTemp}
                 ) // GO
 
-                console.log(json)
+                //console.log(json)
             })
             .catch((error) => {
                 console.log(error);
@@ -81,6 +86,7 @@ function App() {
             .catch((error) => {
                 console.log(error);
             });
+        setpPumpDur(20/(newValue+1));
     };
     const setSpumprate = (event, newValue) => {
         axios
@@ -89,6 +95,7 @@ function App() {
             .catch((error) => {
                 console.log(error);
             });
+        setsPumpDur(20/(newValue+1));
     };
     const setACPpumprate = (event, newValue) => {
         axios
@@ -97,6 +104,7 @@ function App() {
             .catch((error) => {
                 console.log(error);
             });
+        setacpPumpDur(20/(newValue+1));
     };
 
     const setStart = (event) => {
@@ -118,7 +126,7 @@ function App() {
 
   return (
       <div className="App">
-          <WaterPumpSvg width={70} length={100}/>
+        <TurbineSvg id="turbine" width={70} duration={"5s"}/>
           <Table class={'table-param'}>
               <tr>
                   <td>param</td>
@@ -130,19 +138,26 @@ function App() {
                               onChange={setRods}/></td>
               </tr>
               <tr>
-                  <td>Prim_Cool_pump_rate</td>
+                  <td>Prim_Cool_pump_rate
+                      <WaterPumpSvg  id="pWaterPump" width={70} duration={ppumpDur}/>
+                  </td>
                   <td><Slider value={data.Prim_Cool_pump_rate} aria-label="Default" valueLabelDisplay="auto"
                               onChange={setPpumprate}/></td>
 
 
               </tr>
               <tr>
-                  <td>Sec_Cool_pump_rate</td>
+                  <td>Sec_Cool_pump_rate
+                      <WaterPumpSvg  id="sWaterPump" width={70} duration={spumpDur}/>
+                  </td>
                   <td><Slider defaultValue={data.Sec_Cool_pump_rate} aria-label="Default" valueLabelDisplay="auto"
                               onChange={setSpumprate}/></td>
               </tr>
               <tr>
-                  <td>Sec_ACP_pump_rate</td>
+                  <td>Sec_ACP_pump_rate
+
+                  <WaterPumpSvg  id="acpWaterPump" width={70} duration={acppumpDur}/>
+                  </td>
                   <td><Slider defaultValue={data.ACP_Cool_pump_rate} aria-label="Default" valueLabelDisplay="auto"
                               onChange={setACPpumprate}/></td>
               </tr>
