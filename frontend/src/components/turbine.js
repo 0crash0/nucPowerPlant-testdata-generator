@@ -50,9 +50,9 @@ const TurbineSvg = (props) => (
                         attributeType="XML"
                         calcMode="linear"
                         dur={props.duration*3 || "60s"}
-                        from="0 3172 1900"
+                        from="0 3172 1850"
                         repeatCount="indefinite"
-                        to="360 3172 1900"
+                        to="360 3172 1850"
                         type="rotate"
                     />
                 </g>
@@ -82,9 +82,9 @@ const TurbineSvg = (props) => (
                         attributeType="XML"
                         calcMode="linear"
                         dur={props.duration*2 || "40s"}
-                        from="0 3172 1900"
+                        from="0 3172 1850"
                         repeatCount="indefinite"
-                        to="360 3172 1900"
+                        to="360 3172 1850"
                         type="rotate"
                     />
                 </g>
@@ -158,9 +158,9 @@ const TurbineSvg = (props) => (
                         attributeType="XML"
                         calcMode="linear"
                         dur={props.duration||"20s"}
-                        from="0 3172 1900"
+                        from="0 3172 1850"
                         repeatCount="indefinite"
-                        to="360 3172 1900"
+                        to="360 3172 1850"
                         type="rotate"
                     />
                 </g>
