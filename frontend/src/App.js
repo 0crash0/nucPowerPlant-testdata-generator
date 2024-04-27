@@ -6,6 +6,7 @@ import axios from "axios";
 import {useEffect, useState} from "react";
 import  WaterPumpSvg from './components/WaterPump'
 import  TurbineSvg from './components/turbine'
+import NuclearPowerStation from './components/nuc_pwr_station'
 //import  WaterPumpSvg from './WaterPump'
 
 const SRV = "localhost:8890" //3001 nodejs  8890 Go
@@ -126,6 +127,7 @@ function App() {
 
   return (
       <div className="App">
+        <NuclearPowerStation id="station"/>
         <TurbineSvg id="turbine" width={70} duration={"5s"}/>
           <Table class={'table-param'}>
               <tr>
