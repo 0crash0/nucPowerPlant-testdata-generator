@@ -1,0 +1,12 @@
+version: '3'
+services:
+  nuc-pwr-station:
+    image: nuc-pwr-station:latest
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      PORT: 80
+      API_SERVER: ""
+    ports:
+      - 80:80

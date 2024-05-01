@@ -8,15 +8,16 @@ import  TurbineSvg from './components/turbine'
 import NuclearPowerStation from './components/nuc_pwr_station'
 //import  WaterPumpSvg from './WaterPump'
 
-const SRV = "localhost:8890" //3001 nodejs  8890 Go
 
-const JSONurl="http://"+SRV+"/getdatajson";
-const SET_RODS_url="http://"+SRV+"/set_rods_pos";
-const SET_Ppumprate_url="http://"+SRV+"/set_ppump_rate";
-const SET_Spumprate_url="http://"+SRV+"/set_spump_rate";
-const SET_Start_url="http://"+SRV+"/start";
-const SET_Stop_url="http://"+SRV+"/stop";
-const SET_ACPpumprate_url = "http://"+SRV+"/set_acppump_rate";
+const API_SERVER= process.env.API_SERVER || window.location.host
+
+const JSONurl=API_SERVER+"/getdatajson";
+const SET_RODS_url=API_SERVER+"/set_rods_pos";
+const SET_Ppumprate_url=API_SERVER+"/set_ppump_rate";
+const SET_Spumprate_url=API_SERVER+"/set_spump_rate";
+const SET_Start_url=API_SERVER+"/start";
+const SET_Stop_url=API_SERVER+"/stop";
+const SET_ACPpumprate_url = API_SERVER+"/set_acppump_rate";
 
 
 function App() {

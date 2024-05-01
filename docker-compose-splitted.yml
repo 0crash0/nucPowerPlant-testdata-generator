@@ -1,0 +1,21 @@
+version: '3'
+services:
+  nuc-pwr-station-frontend:
+    image: nuc-pwr-station-frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      PORT: 80
+      API_SERVER: http://localhost:8890/
+    ports:
+      - 80:80
+  nuc-pwr-station-backend:
+    image: nuc-pwr-station-backend:latest
+    build:
+      context: ./backendGO
+      dockerfile: Dockerfile
+    environment:
+      PORT: 8890
+    ports:
+      - 8890:8890

@@ -1,0 +1,7 @@
+.git
+.idea
+vector
+.gitattributes
+.gitignore
+README.md
+docker-compose.yml
